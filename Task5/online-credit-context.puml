@@ -1,0 +1,36 @@
+@startuml
+title C4 Context - Online Credit Application
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+skinparam rectangle {
+  BorderColor #4A4A4A
+  BackgroundColor #F7F7F7
+}
+skinparam actor {
+  BorderColor #4A4A4A
+  BackgroundColor #FFFFFF
+}
+
+actor "Новый клиент" as NewCustomer
+actor "Клиент интернет-банка" as IbCustomer
+actor "Сотрудник отделения" as BranchEmployee
+
+rectangle "Online Credit Channel\n[System]\nКаталог, заявки,\nстатусы и уведомления" as OnlineCredit
+rectangle "Кредитный конвейер\n[External System]\nМастер кредитного процесса" as CreditConveyor
+rectangle "Система скоринга\n[External System]" as Scoring
+rectangle "АБС\n[External System]\nРабота сотрудника отделения" as ABS
+rectangle "Бюро кредитных историй\n[External System]" as BKI
+rectangle "SMS-шлюз\n[External System]" as SmsGateway
+
+NewCustomer --> OnlineCredit : Сайт:\nпросмотр продуктов,\nподача заявки
+IbCustomer --> OnlineCredit : Интернет-банк:\nофферы, подача заявки,\nпросмотр статуса
+OnlineCredit --> CreditConveyor : Передаёт онлайн-заявки\nи получает статусы
+CreditConveyor --> Scoring : Запускает скоринг
+Scoring --> BKI : Запрашивает данные
+OnlineCredit --> ABS : Синхронизирует карточку\nонлайн-заявки
+BranchEmployee --> ABS : Продолжает ту же заявку\nв отделении
+OnlineCredit --> SmsGateway : OTP и статусные SMS
+
+@enduml

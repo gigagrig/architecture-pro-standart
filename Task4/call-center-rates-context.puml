@@ -1,0 +1,34 @@
+@startuml
+title C4 Context - Deposit Rates Distribution to Call Centers
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+skinparam rectangle {
+  BorderColor #4A4A4A
+  BackgroundColor #F7F7F7
+}
+skinparam actor {
+  BorderColor #4A4A4A
+  BackgroundColor #FFFFFF
+}
+
+actor "Сотрудник депозитного\nбэк-офиса" as DepositBackOffice
+actor "Сотрудник кредитного\nбэк-офиса" as CreditBackOffice
+actor "Оператор кол-центра\nбанка" as BankCallCenterAgent
+actor "Оператор партнёрского\nкол-центра" as PartnerCallCenterAgent
+
+rectangle "Контур публикации ставок\n[System]\nПубликация актуальных\nдепозитных ставок" as RateDistribution
+rectangle "АБС\n[External System]\nМастер-система ставок" as ABS
+rectangle "Система кол-центра банка\n[External System]" as BankCallCenterSystem
+rectangle "Система партнёрского\nкол-центра\n[External System]" as PartnerCallCenterSystem
+
+DepositBackOffice --> ABS : Ведёт ставки
+CreditBackOffice --> ABS : Уточняет правила\nспециальных условий
+RateDistribution --> ABS : Получает опубликованный\nсрез ставок
+BankCallCenterSystem --> RateDistribution : Запрашивает\nактуальные ставки
+RateDistribution --> PartnerCallCenterSystem : Передаёт файл ставок
+BankCallCenterAgent --> BankCallCenterSystem : Консультирует клиента
+PartnerCallCenterAgent --> PartnerCallCenterSystem : Консультирует клиента
+
+@enduml
