@@ -1,5 +1,5 @@
 @startuml
-title C4 Component - Online Credit Channel
+title C4 Container - Online Credit Channel
 
 skinparam shadowing false
 skinparam defaultTextAlignment center
@@ -22,25 +22,25 @@ actor "Клиент ИБ" as IbCustomer
 actor "Сотрудник отделения" as BranchEmployee
 
 package "Каналы" {
-  rectangle "Сайт\n[Component]\nPHP + React.js" as SiteUi
-  rectangle "Интернет-банк UI\n[Component]\nASP.NET MVC 4.5" as IbUi
+  rectangle "Сайт\n[Container]\nPHP + React.js" as SiteUi
+  rectangle "Интернет-банк UI\n[Container]\nASP.NET MVC 4.5" as IbUi
 }
 
 package "Online Credit Channel" {
-  rectangle "Credit Channel API\n[Component]\nКаталог, офферы,\nзаявки, статусы" as CreditChannelApi
-  rectangle "Notification Service\n[Component]\nOTP и статусные SMS" as NotificationService
-  rectangle "ABS Sync Adapter\n[Component]\nСинхронизация\nв АБС" as AbsSyncAdapter
-  database "Offer Store\n[Component]\nКаталог и офферы" as OfferStore
-  database "Application Registry\n[Component]\nОнлайн-заявки,\nстатусы, история" as ApplicationRegistry
+  rectangle "Credit Channel API\n[Container]\nКаталог, офферы,\nзаявки, статусы" as CreditChannelApi
+  rectangle "Notification Service\n[Container]\nOTP и статусные SMS" as NotificationService
+  rectangle "ABS Sync Adapter\n[Container]\nСинхронизация\nв АБС" as AbsSyncAdapter
+  database "Offer Store\n[Container]\nКаталог и офферы" as OfferStore
+  database "Application Registry\n[Container]\nОнлайн-заявки,\nстатусы, история" as ApplicationRegistry
 }
 
 package "Кредитный конвейер" {
-  rectangle "Online Workflow API\n[Component]\nОнлайн-процессы,\nмаршрутизация" as OnlineWorkflowApi
-  rectangle "Offer Publisher\n[Component]\nПубликация каталога\nи офферов" as OfferPublisher
+  rectangle "Online Workflow API\n[Container]\nОнлайн-процессы,\nмаршрутизация" as OnlineWorkflowApi
+  rectangle "Offer Publisher\n[Container]\nПубликация каталога\nи офферов" as OfferPublisher
 }
 
 package "АБС" {
-  rectangle "ABS Online Credit Registry\n[Component]\nКарточка онлайн-заявки\nдля отделения" as AbsOnlineRegistry
+  rectangle "ABS Online Credit Registry\n[Container]\nКарточка онлайн-заявки\nдля отделения" as AbsOnlineRegistry
 }
 
 rectangle "Система скоринга\n[External System]" as Scoring

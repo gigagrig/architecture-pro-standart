@@ -1,5 +1,5 @@
 @startuml
-title C4 Component - Deposit Rates Distribution
+title C4 Container - Deposit Rates Distribution
 
 skinparam shadowing false
 skinparam defaultTextAlignment center
@@ -21,24 +21,24 @@ actor "Оператор кол-центра" as BankAgent
 actor "Партнёрский оператор" as PartnerAgent
 
 package "АБС" {
-  rectangle "Rate Registry Module\n[Component]\nРеестр ставок\nи правил" as RateRegistry
+  rectangle "Rate Registry Module\n[Container]\nРеестр ставок\nи правил" as RateRegistry
 }
 
 package "Deposit MVP" {
-  rectangle "ABS Adapter\n[Component]\nВыгрузка ставок\nиз АБС" as AbsAdapter
-  rectangle "Rate Publication Service\n[Component]\nВнутренний API\nдля кол-центра" as RatePublicationService
-  rectangle "Partner Export Job\n[Component]\nФормирование и\nотправка файлов" as PartnerExportJob
-  database "Deposit DB\n[Component]\nПубличный срез ставок\nи журнал публикаций" as DepositDb
+  rectangle "ABS Adapter\n[Container]\nВыгрузка ставок\nиз АБС" as AbsAdapter
+  rectangle "Rate Publication Service\n[Container]\nВнутренний API\nдля кол-центра" as RatePublicationService
+  rectangle "Partner Export Job\n[Container]\nФормирование и\nотправка файлов" as PartnerExportJob
+  database "Deposit DB\n[Container]\nПубличный срез ставок\nи журнал публикаций" as DepositDb
 }
 
 package "Система кол-центра банка" {
-  rectangle "Rate Widget\n[Component]\nЭкран ставок для\nоператора" as RateWidget
-  database "Call Center DB\n[Component]\nОпциональный кэш" as CallCenterDb
+  rectangle "Rate Widget\n[Container]\nЭкран ставок для\nоператора" as RateWidget
+  database "Call Center DB\n[Container]\nОпциональный кэш" as CallCenterDb
 }
 
 package "Партнёрский контур" {
-  rectangle "Partner Mailbox\n[Component]\nПолучение файлов" as PartnerMailbox
-  rectangle "Partner Rate Import\n[Component]\nЗагрузка ставок\nв систему партнёра" as PartnerRateImport
+  rectangle "Partner Mailbox\n[Container]\nПолучение файлов" as PartnerMailbox
+  rectangle "Partner Rate Import\n[Container]\nЗагрузка ставок\nв систему партнёра" as PartnerRateImport
 }
 
 BankAgent --> RateWidget : Открывает ставки
