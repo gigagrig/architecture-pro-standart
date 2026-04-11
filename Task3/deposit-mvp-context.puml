@@ -1,0 +1,30 @@
+@startuml
+title C4 Context - Deposit MVP
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+skinparam rectangle {
+  BorderColor #4A4A4A
+  BackgroundColor #F7F7F7
+}
+skinparam actor {
+  BorderColor #4A4A4A
+  BackgroundColor #FFFFFF
+}
+
+actor "Клиент банка" as Customer
+actor "Сотрудник депозитного\nбэк-офиса" as DepositBackOffice
+actor "Сотрудник кредитного\nбэк-офиса" as CreditBackOffice
+
+rectangle "Deposit MVP\n[System]\nКонтур онлайн-открытия депозитов\nв интернет-банке" as DepositMvp
+rectangle "АБС\n[External System]\nУчёт, ставки и открытие депозитов" as ABS
+rectangle "SMS-шлюз\n[External System]\nОтправка SMS" as SmsGateway
+
+Customer --> DepositMvp : Просмотр ставок,\nподача заявки,\nполучение статусов
+DepositMvp --> SmsGateway : OTP и статусные SMS
+DepositMvp --> ABS : Передача заявок,\nполучение ставок и статусов
+DepositBackOffice --> ABS : Подтверждает ставку\nи открывает депозит
+CreditBackOffice --> ABS : Ведёт параметры для\nспециальных ставок
+
+@enduml

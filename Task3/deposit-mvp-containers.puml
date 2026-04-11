@@ -1,0 +1,62 @@
+@startuml
+title C4 Container - Deposit MVP
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+skinparam rectangle {
+  BorderColor #4A4A4A
+  BackgroundColor #F7F7F7
+}
+skinparam database {
+  BorderColor #4A4A4A
+  BackgroundColor #FCFCFC
+}
+skinparam actor {
+  BorderColor #4A4A4A
+  BackgroundColor #FFFFFF
+}
+
+actor "Клиент банка" as Customer
+actor "Сотрудник депозитного /\nкредитного бэк-офиса" as BackOffice
+
+package "Интернет-банк" {
+  rectangle "Web UI / MVC монолит\n[Container]\nASP.NET MVC 4.5\nНовые экраны депозитов" as IbWeb
+  database "IB DB\n[Container]\nMS SQL\nПрофиль клиента,\nсчета, сессии" as IbDb
+}
+
+package "Deposit MVP" {
+  rectangle "Deposit API\n[Container]\nREST-сервис\nКаталог, расчёт ставок,\nзаявки и статусы" as DepositApi
+  rectangle "Notification Service\n[Container]\nOTP и статусные SMS" as NotificationService
+  rectangle "ABS Adapter\n[Container]\nФоновая интеграция\nс АБС" as AbsAdapter
+  database "Deposit DB\n[Container]\nMS SQL\nЗаявки, read model ставок,\nжурнал интеграции" as DepositDb
+}
+
+package "АБС" {
+  rectangle "Desktop Client\n[Container]\nDelphi-клиент" as AbsClient
+  rectangle "Rate Registry Module\n[Container]\nPL/SQL\nСтавки и правила" as RateRegistry
+  rectangle "Deposit Workflow Module\n[Container]\nPL/SQL\nОбработка онлайн-заявок\nи открытие депозитов" as DepositWorkflow
+  database "Oracle DB\n[Container]" as AbsDb
+}
+
+rectangle "SMS-шлюз\n[External System]" as SmsGateway
+
+Customer --> IbWeb : Работает с депозитным\nсценарием
+IbWeb --> IbDb : Читает профиль,\nсчета и сессию
+IbWeb --> DepositApi : REST/TLS\nПолучить каталог,\nставки, подать заявку,\nпоказать статус
+
+DepositApi --> DepositDb : Читает и пишет\nзаявки и read model
+DepositApi --> NotificationService : Запросить OTP,\nпроверить код,\nотправить уведомление
+NotificationService --> SmsGateway : Отправка SMS
+
+AbsAdapter --> DepositDb : Читает новые заявки,\nобновляет ставки и статусы
+AbsAdapter --> AbsDb : Интеграционная схема,\nобмен пакетами
+AbsAdapter --> NotificationService : Инициирует SMS\nпо смене статуса
+
+BackOffice --> AbsClient : Работает со ставками\nи заявками
+AbsClient --> RateRegistry : Ведение ставок
+AbsClient --> DepositWorkflow : Обработка заявок
+RateRegistry --> AbsDb : Хранение правил ставок
+DepositWorkflow --> AbsDb : Хранение заявок,\nстатусов и депозитов
+
+@enduml

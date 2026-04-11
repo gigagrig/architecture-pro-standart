@@ -1,0 +1,71 @@
+@startuml
+title C4 Container - Online Credit Channel
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+skinparam rectangle {
+  BorderColor #4A4A4A
+  BackgroundColor #F7F7F7
+}
+skinparam database {
+  BorderColor #4A4A4A
+  BackgroundColor #FCFCFC
+}
+skinparam actor {
+  BorderColor #4A4A4A
+  BackgroundColor #FFFFFF
+}
+
+actor "Новый клиент" as NewCustomer
+actor "Клиент ИБ" as IbCustomer
+actor "Сотрудник отделения" as BranchEmployee
+
+package "Каналы" {
+  rectangle "Сайт\n[Container]\nPHP + React.js" as SiteUi
+  rectangle "Интернет-банк UI\n[Container]\nASP.NET MVC 4.5" as IbUi
+}
+
+package "Online Credit Channel" {
+  rectangle "Credit Channel API\n[Container]\nКаталог, офферы,\nзаявки, статусы" as CreditChannelApi
+  rectangle "Notification Service\n[Container]\nOTP и статусные SMS" as NotificationService
+  rectangle "ABS Sync Adapter\n[Container]\nСинхронизация\nв АБС" as AbsSyncAdapter
+  database "Offer Store\n[Container]\nКаталог и офферы" as OfferStore
+  database "Application Registry\n[Container]\nОнлайн-заявки,\nстатусы, история" as ApplicationRegistry
+}
+
+package "Кредитный конвейер" {
+  rectangle "Online Workflow API\n[Container]\nОнлайн-процессы,\nмаршрутизация" as OnlineWorkflowApi
+  rectangle "Offer Publisher\n[Container]\nПубликация каталога\nи офферов" as OfferPublisher
+}
+
+package "АБС" {
+  rectangle "ABS Online Credit Registry\n[Container]\nКарточка онлайн-заявки\nдля отделения" as AbsOnlineRegistry
+}
+
+rectangle "Система скоринга\n[External System]" as Scoring
+rectangle "БКИ\n[External System]" as BKI
+rectangle "SMS-шлюз\n[External System]" as SmsGateway
+
+NewCustomer --> SiteUi : Работает с сайтом
+IbCustomer --> IbUi : Работает с ИБ
+
+SiteUi --> CreditChannelApi : Получить каталог,\nподать заявку
+IbUi --> CreditChannelApi : Получить каталог,\nофферы, подать заявку,\nпосмотреть статус
+
+CreditChannelApi --> OfferStore : Читает каталог\nи офферы
+CreditChannelApi --> ApplicationRegistry : Пишет заявки\nи статусы
+CreditChannelApi --> NotificationService : OTP и SMS
+CreditChannelApi --> OnlineWorkflowApi : Передаёт онлайн-заявки
+
+OfferPublisher --> OfferStore : Публикует каталог\nи предодобренные офферы
+OnlineWorkflowApi --> Scoring : Запускает скоринг
+Scoring --> BKI : Онлайн-запрос
+
+AbsSyncAdapter --> ApplicationRegistry : Читает заявки\nи статусы
+AbsSyncAdapter --> AbsOnlineRegistry : Синхронизирует\nкарточку заявки
+BranchEmployee --> AbsOnlineRegistry : Продолжает заявку
+
+NotificationService --> SmsGateway : Отправляет SMS
+
+@enduml
